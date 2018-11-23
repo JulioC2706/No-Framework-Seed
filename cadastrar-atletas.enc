@@ -1,0 +1,353 @@
+<?php
+#Instrução para uso em Produção
+include 'connect_prod.php';
+#Instrução para uso em Dev
+
+#include('connect_dev.php');
+?>
+<html lang="pt-br">
+    <head>
+        <title> Federação Paulista Basebol e SoftBol - SITE</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="bootstrap.css" rel="stylesheet">
+        <link hrel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+        <link href="estilo-effects.css" rel="stylesheet">
+        <link href="estilos_gerais.css" rel="stylesheet">
+        <link href="form-cadastro.css" rel="stylesheet">
+        <!-- <link href="estilo-cad-atleta.css" rel="stylesheet"> -->
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #091827"> <!--HEADER-->
+            <section class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#movelmenu" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="index.php" class="navbar-brand"> <img class="logo-teste" src="Loguinho-beisebol-02-cortado.png"> </a>
+                </div>
+                <!-- /.navbar-header -->
+                <div class="collapse navbar-collapse pull-right" id="movelmenu"> <!--MENU -->
+                    <ul class="nav navbar-nav" >
+                        <li id="nav-data" class=" data" ><?php setlocale(LC_TIME, 'pt_BR', 'portuguese');
+                        date_default_timezone_set('America/Sao_Paulo');
+                        echo strftime('%d de %B de %Y', strtotime('today'));?></li>
+                        <li id="nav-header"><a href="index.php"><span id="glyph-navbar" class="glyphicon glyphicon-home"></span>INÍCIO</a></li>
+                        <li id="nav-header"  class="active"><a href="cadastrar_main.php"><span id="glyph-navbar" class="glyphicon glyphicon-pencil"></span>CADASTRO</a></li>
+                        <li id="nav-header"><a href="pageOffB.php"><span id="glyph-navbar" class="glyphicon glyphicon-search"></span>CONSULTA</a></li>
+                        <li id="nav-header"><a href="pageOffB.php"><span id="glyph-navbar" class="glyphicon glyphicon-user"></span>LOGIN</a></li>
+                    </ul>
+                    <!-- /.nav navbar-nav -->
+                </div>
+                <!-- /.collapse navbar-collapse -->
+            </section>
+        </nav>
+        <!-- Digite abaixo seu codigo -->
+        <div class="bg-left" id="bd-atleta"></div>
+        <div class="container">
+            <h1 style="font-family: century gothic; text-align:center;">Cadastro de Atleta</h1>
+            <div class="form-cadastro" style="color: black"">
+                <!-- AQUI COMEÇA A MONTAGEM DO FORMULARIO DE CADASTRO DE ATLETAS - V1.0 - FEITO EM 22/OUT/2018 POR GIOVANI LEITE VITOR -->
+                <img class="img-responsive icon-left-top" src="icons-bone.png">
+                <div class="container">
+                  <FORM method="POST" action="api-cadastrar.php?acao=adicionar_atleta" id="frm" onsubmit="return validaForm()">
+                        <!-- <h3 style="font-family: century gothic; margin-top:5%; text-align:center;">Dados pessoais</h3> -->
+                        <legend>Dados pessoais</legend>
+                        <div class="row">
+                            <!-- PARTE ESQUERDA -->
+                            <div class="inside-form col-md-12" id="form-cad-top">
+                                <div class="row">
+                                    <div class="form-group col-md-4 col-sm-12">
+                                        <label for="NOME_ATLETA">Primeiro nome</label>
+                                        <input name="NOME_ATLETA" class="form-control neon-effect-orange" type="text" maxlength="25" id="NOME_ATLETA" placeholder="Digite seu nome"/>
+                                    </div>
+                                    <div class="form-group col-md-4 col-sm-12">
+                                        <label for="MEIONOME_ATLETA">Nome do meio</label>
+                                        <input name="MEIONOME_ATLETA" class="form-control neon-effect-orange" type="text" maxlength="25" id="MEIONOME_ATLETA" placeholder="Segundo nome"/>
+                                    </div>
+                                    <div class="form-group col-md-4 col-sm-12">
+                                        <label for="SOBRENOME_ATLETA">Sobrenome</label>
+                                        <input name="SOBRENOME_ATLETA" class="form-control neon-effect-orange" type="text" maxlength="25" id="SOBRENOME_ATLETA" onblur="geraShortname()" placeholder="Digite seu sobrenome"/>
+                                    </div>
+                                </div>
+                                <div class="row" id="form-cad-idade" >
+                                    <div class="form-group col-md-4">
+                                        <label for="idade">Data de Nascimento</label>
+                                        <input type="date" name="" class="form-control neon-effect-orange" id="idade">
+                                        <!-- /.dia-mes-ano -->
+                                    </div>
+                                    <!-- /col-md-6 -->
+                                    <div class="form-group col-md-4">
+                                        <label for="NACIONALIDADE_ATLETA">Nacionalidade</label>
+                                        <select name="NACIONALIDADE_ATLETA" class="form-control neon-effect-orange" id="NACIONALIDADE_ATLETA">
+                                            <option value="">Nacionalidade</option>
+                                            <option value="Brasil">Brasil</option>
+                                            <option value="China">China</option>
+                                            <option value="Japão">Japão</option>
+                                            <option value="EUA">EUA</option>
+                                            <option value="Outro">Outro</option>
+                                        </select>
+                                    </div>
+                                    <!-- /col-md-4 -->
+                                    <div class="form-group col-md-4">
+                                        <label for="SEXO_ATLETA">Sexo</label>
+                                        <select name="SEXO_ATLETA" class="form-control neon-effect-orange" id="SEXO_ATLETA" >
+                                            <option value="">Selecione</option>
+                                            <option value="Masculino">Masculino</option>
+                                            <option value="Feminino">Feminino</option>
+                                        </select>
+                                    </div>
+                                    <!-- /col-md-4 -->
+                                </div>
+                                <!-- /.form-cad-idade -->
+                                <div class="row" id="form-cad-atleta-rgcpf">
+                                    <div class="form-group col-md-3" >
+                                        <label for="CELULAR_ATLETA">Celular</label>
+                                        <input name="CELULAR_ATLETA" class="form-control neon-effect-orange"  maxlength="15" onkeyup="mascara( this, mtel );" type="text" id="CELULAR_ATLETA" placeholder="xx xxxxx-xxx">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="tel">Telefone</label>
+                                        <input name="TELEFONE_ATLETA" class="form-control neon-effect-orange" maxlength="14" onkeyup="mascara( this, mtel );" type="text" id="layer-cad-atleta-tel" placeholder="xx xxx-xxx">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="RG_ATLETA">RG</label>
+                                        <input name="RG_ATLETA" class="form-control neon-effect-orange" type="text" maxlength="9"  id="RG_ATLETA" placeholder="Digite seu rg"/>
+                                    </div>
+                                    <div class="form-group col-md-3" >
+                                        <label for="CPF_ATLETA">CPF</label>
+                                        <input name="CPF_ATLETA" class="form-control neon-effect-orange" type="text" maxlength="11" id="CPF_ATLETA"  placeholder="Apenas números"/>
+                                    </div>
+                                </div>
+                                <div class="row" id="form-cad-atleta-end1">
+                                    <div class="form-group col-md-3">
+                                        <label for="CEP_ATLETA">CEP</label>
+                                        <input name="CEP_ATLETA" class="form-control neon-effect-orange" type="text" size = "10" maxlength = "8" onblur = "pesquisaCep(this.value);" id="CEP_ATLETA" placeholder="Apenas números"/>
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        <label for="ENDERECO_ATLETA">Endereço</label>
+                                        <input name="ENDERECO_ATLETA" class="form-control neon-effect-orange" type="text" id="ENDERECO_ATLETA" maxlength = "99" placeholder="Digite seu Endereço">
+                                    </div>
+                                </div>
+                                <div class="row" id="form-cad-atleta-endereco2">
+                                    <div class="form-group col-md-3">
+                                        <label for="COMP_END_ATLETA">Complemento</label>
+                                        <input name="COMP_END_ATLETA" class="form-control neon-effect-orange" maxlength = "99" type="text" id="COMP_END_ATLETA" placeholder="Digite o complemento">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="BAIRRO_ATLETA">Bairro</label>
+                                        <input name="BAIRRO_ATLETA" class="form-control neon-effect-orange" maxlength = "99" type="text" id="BAIRRO_ATLETA" placeholder="Digite seu Bairro">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="CIDADE_ATLETA">Cidade</label>
+                                        <input name="CIDADE_ATLETA" class="form-control neon-effect-orange" maxlength = "99" type="text" id="CIDADE_ATLETA" placeholder="Digite sua Cidade">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="ESTADO_ATLETA">Estado</label>
+                                        <input name="ESTADO_ATLETA" class="form-control neon-effect-orange" maxlength="2" type="text" id="ESTADO_ATLETA" placeholder="Digite seu Estado">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4" >
+                                        <label for="EMAIL_ATLETA">Email</label>
+                                        <input name="EMAIL_ATLETA" class="form-control neon-effect-orange" maxlength = "45" type="text" id="EMAIL_ATLETA" placeholder="nome@exemplo.com"/>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="SENHA_ATLETA">Senha</label>
+                                        <input name="SENHA_ATLETA" class="form-control neon-effect-orange" maxlength = "25"  type="password" id="SENHA_ATLETA" placeholder="Digite sua senha">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="confirm_senha">Co-senha</label>
+                                        <input class="form-control neon-effect-orange"  type="password" maxlength = "25" id="confirm_senha" onblur = "valida_Password();" placeholder="Confirme sua senha">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label for="NOME_PAI_RESP_ATLETA">Nome completo do pai</label>
+                                        <input name="NOME_PAI_RESP_ATLETA" class="form-control neon-effect-orange" maxlength = "80" type="text" id="NOME_PAI_RESP_ATLETA" maxlength="99" placeholder="Digite o nome do pai"/>
+                                    </div>
+                                    <div class="form-group col-md-12" id="form-cad-atleta-mae">
+                                        <label for="NOME_MAE_RESP_ATLETA">Nome completo da mãe</label>
+                                        <input name="NOME_MAE_RESP_ATLETA" class="form-control neon-effect-orange" maxlength = "80"  type="text" id="NOME_MAE_RESP_ATLETA" maxlength="99" placeholder="Digite o nome do mae"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="line-separator"  id="line-separator2" style="background-color:#091827;height:2px; display: none;"></div>
+                        <div class="inside-form" id="form-cad-mid" style="display: none;"><!-- style="display: none;"  -->
+                            <legend>Dados dos responsáveis</legend>
+                            <div class="row">
+                                <div class="form-group col-md-12" id="form-cad-atleta-resp">
+                                <label for="NOME_RESP_ATLETA">Nome completo do responsável</label>
+                                <input name="NOME_RESP_ATLETA" class="form-control neon-effect-orange" maxlength = "80" type="text" id="NOME_RESP_ATLETA" placeholder="Digite o nome do responável "/>
+                                </div>
+                            </div>
+                            <div class="row" id="form-cad-atleta-rgcpf-resp">
+                                <div class="form-group col-md-3" >
+                                    <label for="CELULAR_RESP_ATLETA">Celular</label>
+                                    <input name="CELULAR_RESP_ATLETA" class="form-control neon-effect-orange" onkeyup="mascara( this, mtel );" maxlength="15" type="text" id="CELULAR_RESP_ATLETA" placeholder="xx xxxx-xxx">
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="TELEFONE_RESP_ATLETA">Telefone</label>
+                                    <input name="TELEFONE_RESP_ATLETA" class="form-control neon-effect-orange" onkeyup="mascara( this, mtel );" maxlength="14" type="text" id="TELEFONE_RESP_ATLETA" placeholder="xx xx xxx-xxx">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="RG_RESP_ATLETA">RG</label>
+                                    <input name="RG_RESP_ATLETA" class="form-control neon-effect-orange" type="text" id="RG_RESP_ATLETA" maxlength="9" placeholder="Apenas números"/>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="CPF_RESP_ATLETA">CPF</label>
+                                    <input name="CPF_RESP_ATLETA" class="form-control neon-effect-orange" type="text" id="CPF_RESP_ATLETA"  maxlength="11" placeholder="Apenas números"/>
+                                </div>
+                            </div>
+                            <div class="row" id="form-cad-atleta-end1-resp">
+                                <div class="form-group col-md-4">
+                                    <label for="CEP_RESP_ATLETA">CEP</label>
+                                    <input name="CEP_RESP_ATLETA" class="form-control neon-effect-orange"  maxlength = "8" type="text" id="CEP_RESP_ATLETA" placeholder="Apenas números"/>
+                                </div>
+                                <div class="form-group col-md-8">
+                                    <label for="ENDERECO_RESP_ATLETA">Endereço do responsável</label>
+                                    <input name="ENDERECO_RESP_ATLETA" class="form-control neon-effect-orange" type="text" id="ENDERECO_RESP_ATLETA" maxlength = "99" placeholder="Digite o endereço do responsável">
+                                </div>
+                            </div>
+
+
+                            <div class="row" id="form-cad-atleta-endereco2-resp">
+                                <div class="form-group col-md-3">
+                                    <label id="COMP_RESP_ATLETA">Complemento</label>
+                                    <input name="COMP_RESP_ATLETA" class="form-control neon-effect-orange" type="text" id="COMP_RESP_ATLETA" maxlength = "25" placeholder="Digite o complemento">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="BAIRRO_RESP_ATLETA">Bairro</label>
+                                    <input name="BAIRRO_RESP_ATLETA" class="form-control neon-effect-orange" maxlength = "99" type="text" id="BAIRRO_RESP_ATLETA" placeholder="Digite o Bairro ">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="CIDADE_RESP_ATLETA">Cidade</label>
+                                    <input name="CIDADE_RESP_ATLETA" class="form-control neon-effect-orange" maxlength = "99" type="text" id="CIDADE_RESP_ATLETA" placeholder="Digite a Cidade">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="ESTADO_RESP_ATLETA">Estado</label>
+                                    <input name="ESTADO_RESP_ATLETA" class="form-control neon-effect-orange" maxlength = "99" type="text" id="ESTADO_RESP_ATLETA" placeholder="Digite o Estado">
+                                </div>
+                            </div>
+                        </div>
+                        <legend >Dados profissionais do atleta</legend>
+                        <div class="inside-form" id="form-cad-bottom">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label for="cod-resp">Código CBBS</label>
+                                    <input name="CODIGO_CBBS_ATLETA" class="form-control neon-effect-orange" type="text" id="layer-cad-atleta-cod" maxlength = "10" placeholder="xx-xx-xx-xx-xx"/>
+                                </div>
+                                <div class="form-group col-md-8">
+                                    <label for="NICKNAME_ATLETA">ShortName do atleta</label>
+                                    <input name="NICKNAME_ATLETA" class="form-control neon-effect-orange" type="text" id="NICKNAME_ATLETA" placeholder="Nickname automático" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label for="CLUBE_ATUAL_ATLETA">Clube Atual</label>
+                                    <!-- #Busca no BD todos os clubes cadastrados -->
+                                    <?php
+                                    #Monta a query para buscar o nome dos Clubes cadastradas
+                                    $sql = "SELECT SIGLA_CLUBE, NOME_COMPLETO_CLUBE, ID, FEDERACAO_ATUAL_CLUBE FROM `fpauli49_BD-FPBS`.`TB-CLUBE`";
+                                    $result = mysqli_query($link, $sql);
+                                    ?>
+                                    <select name="CLUBE_ATUAL_ATLETA" class="form-control neon-effect-orange" onchange=" return preencheNomeFed()" id="CLUBE_ATUAL_ATLETA">
+                                        <option value="">Selecione o clube </option>
+                                        <?php while ($fed = mysqli_fetch_array($result)) {?>
+                                        <option value="<?php echo $fed['SIGLA_CLUBE'] ?>"> <?php echo $fed['SIGLA_CLUBE'], ' - ', $fed['NOME_COMPLETO_CLUBE'] ?> </option>
+                                        <?php }?>
+                                        <option value="OUTRO CLUBE">Outro Clube</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-8">
+                                    <label for="FEDERACAO_ATUAL_ATLETA">Federação Proprietária associada ao clube</label>
+                                    <input name="FEDERACAO_ATUAL_ATLETA" class="form-control neon-effect-orange" type="text" id="FEDERACAO_ATUAL_ATLETA" value="<?php echo $fed['FEDERACAO_ATUAL_CLUBE'] ?>" placeholder="- - -" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                            </div><!-- /row -->
+                            <div class="row">
+                                <div class="form-group col-md-3" >
+                                    <label for="MODALIDADE_ATLETA">Modalidade</label>
+                                    <select name="MODALIDADE_ATLETA" class="form-control neon-effect-orange"  type="text" id="MODALIDADE_ATLETA" placeholder="xx xxxx-xxx">
+                                        <option value="">Selecione a modalidade</option>
+                                        <option value="Beisebol">Beisebol</option>
+                                        <option value="Softbol">Softbol</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3" >
+                                    <label for="ARREMESSA_ATLETA">Arremessa</label>
+                                    <select name="ARREMESSA_ATLETA" class="form-control neon-effect-orange"  type="text" id="ARREMESSA_ATLETA" placeholder="xx xx xxx-xxx">
+                                        <option value="">Selecione o mão preferida</option>
+                                        <option value="Destro">Destro</option>
+                                        <option value="Canhoto">Canhoto</option>
+                                        <option value="Ambidestro">Ambidestro</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label id="REBATE_ATLETA" for="arremessa">Rebate</label>
+                                    <select name="REBATE_ATLETA" class="form-control neon-effect-orange"  type="text" id="REBATE_ATLETA" placeholder="xx xx xxx-xxx">
+                                        <option value="">Selecione o mão preferida</option>
+                                        <option value="Destro">Destro</option>
+                                        <option value="Canhoto">Canhoto</option>
+                                        <option value="Ambidestro">Ambidestro</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-3"><!--style="margin-top: -19px;"-->
+                                    <label for="POSICAO_PREF_ATLETA">Posição preferencial</label>
+                                    <select name="POSICAO_PREF_ATLETA" class="form-control neon-effect-orange" type="text" id="POSICAO_PREF_ATLETA" placeholder="Apenas números">
+                                        <option value="">Selecione uma posição</option>
+                                        <option value="Arremessador">Arremessador</option>
+                                        <option value="Receptor">Receptor</option>
+                                        <option value="Primeira Base">Primeira Base</option>
+                                        <option value="Segunda Base">Segunda Base</option>
+                                        <option value="Terceira Base">Terceira Base</option>
+                                        <option value="Interbase">Primeira Base</option>
+                                        <option value="Jardineiro Esquerdo">Jardineiro Esquerdo</option>
+                                        <option value="Jardineiro Direito">Jardineiro Direito</option>
+                                        <option value="Jardineiro Central">Jardineiro Central</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="autoriz" >
+                            <div class="checkbox" id="autoriz-atleta">
+                                <label for="AUTORIZA_IMAGEM_ATLETA"><input name="AUTORIZA_IMAGEM_ATLETA" 	id="AUTORIZA_IMAGEM_ATLETA" type="checkbox" value="TRUE" >Autorização para uso de imagem</label><br>
+                                <label for="AUTORIZA_CADASTRO_ATLETA"><input name="AUTORIZA_CADASTRO_ATLETA" id="AUTORIZA_CADASTRO_ATLETA" type="checkbox" value="TRUE" >Autorização para cadastro</label><br>
+                                <label for="CONCORDA_TERMOS_ATLETA"><input name="CONCORDA_TERMOS_ATLETA" 	id="CONCORDA_TERMOS_ATLETA" type="checkbox" value="TRUE" >Concordo com os termos</label>
+                            </div>
+                        </div>
+                        <!-- <div class="g-recaptcha" style = "margin-left:38%;"  data-sitekey="6Lcc93YUAAAAAB7Z1mhcV326Dbci4gGtGgVGKa16"></div>  -->
+                        <input class="btn neon-effect-orange2 center-block btn-success" type="submit" value="CADASTRAR">
+                        <!-- AQUI TERMINA A MONTAGEM DO FORMULARIO DE CADASTRO DE ATLETAS - V1.0 - FEITO EM 22/OUT/2018 POR GIOVANI LEITE VITOR -->
+                    </FORM>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- container -->
+            </div>
+            <!-- /.form-cadastro -->
+        </div>
+        <script src="jquery.js"></script>
+        <script src="jquery.mask.js"></script>
+        <script src="script-cad-atleta.js"></script>
+        <script>
+            $(function(){
+                $(['#layer_cad_atleta_cep','#layer_cad_atleta_cep_resp']).mask('00000-000');
+                $(['#layer_cad_atleta_rg','#layer_cad_atleta_rg_resp']).mask('00.000.000-0');
+                $(['#layer_cad_atleta_cpf','#layer_cad_atleta_cpf_resp']).mask('000.000.000-00');
+                $('#layer-cad-atleta-cod').mask('00-00-00-00-00');
+            });
+        </script>
+    </body>
+</html>
+
+
+
